@@ -3,10 +3,88 @@ use macroquad::request_redraw;
 
 const SQUARES: i16 = 3;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 enum Field {
     X,
     O,
+}
+
+fn check_end(fields: &Vec<Option<Field>>) -> bool {
+    for row in 0..SQUARES {
+        let mut prev_val = None;
+        for field_num in row * SQUARES..row * SQUARES + SQUARES {
+            if let Some(field) = &fields[field_num as usize] {
+                if let Some(prev_val) = &mut prev_val {
+                    if &field != prev_val {
+                        break;
+                    } else {
+                        if field_num == row * SQUARES + SQUARES - 1 {
+                            return true;
+                        }
+                    }
+                }
+                prev_val = Some(field);
+            } else {
+                break;
+            }
+        }
+    }
+    for column in 0..SQUARES {
+        let mut prev_val = None;
+        for row in 0..SQUARES {
+            if let Some(field) = &fields[(row * SQUARES + column) as usize] {
+                if let Some(prev_val) = &mut prev_val {
+                    if &field != prev_val {
+                        break;
+                    } else {
+                        if row == SQUARES - 1 {
+                            return true;
+                        }
+                    }
+                }
+                prev_val = Some(field);
+            } else {
+                break;
+            }
+        }
+    }
+
+    let mut prev_val = None;
+    for field_num in 0..SQUARES {
+        if let Some(field) = &fields[(field_num * SQUARES + field_num) as usize] {
+            if let Some(prev_val) = &mut prev_val {
+                if &field != prev_val {
+                    break;
+                } else {
+                    if field_num == SQUARES - 1 {
+                        return true;
+                    }
+                }
+            }
+            prev_val = Some(field);
+        } else {
+            break;
+        }
+    }
+
+    let mut prev_val = None;
+    for field_num in 0..SQUARES {
+        if let Some(field) = &fields[(field_num * SQUARES + (SQUARES - field_num - 1)) as usize] {
+            if let Some(prev_val) = &mut prev_val {
+                if &field != prev_val {
+                    break;
+                } else {
+                    if field_num == SQUARES - 1 {
+                        return true;
+                    }
+                }
+            }
+            prev_val = Some(field);
+        } else {
+            break;
+        }
+    }
+    false
 }
 
 #[macroquad::main("TicTacToe")]
@@ -15,6 +93,7 @@ async fn main() {
     let mut game_over = false;
     let mut touched;
     let mut x_move = true;
+    let mut left = SQUARES * SQUARES;
     let mut prev = None;
 
     loop {
@@ -62,9 +141,19 @@ async fn main() {
             for touch in touches().iter().take(1) {
                 match touch.phase {
                     TouchPhase::Ended | TouchPhase::Cancelled => {
-                        x_move = !x_move;
+                        if prev.is_some() {
+                            x_move = !x_move;
+                            left -= 1;
+                            if left <= 0 {
+                                game_over = true;
+                                request_redraw();
+                            }
+                        }
                         prev = None;
-                        request_redraw();
+                        if check_end(&fields) {
+                            game_over = true;
+                            request_redraw();
+                        }
                         continue;
                     }
                     _ => (),
@@ -93,9 +182,10 @@ async fn main() {
                         };
                         prev = Some(field_num);
                     }
+                } else {
+                    prev = None;
                 }
             }
-            draw_text(&format!("fields: {fields:?}"), 0., 20., 32., BLUE);
             for (i, field) in fields.iter().enumerate() {
                 if let Some(field) = field {
                     let x = i % SQUARES as usize;
@@ -122,19 +212,27 @@ async fn main() {
                             );
                         }
                         Field::O => {
-                            draw_circle_lines(new_x as f32, new_y as f32, 60., 2., RED);
+                            draw_circle_lines(new_x as f32, new_y as f32, 80., 60., RED);
                         }
                     }
                 }
             }
         } else {
             clear_background(WHITE);
-            let text = "Game Over. Touch screen to play again.";
+            let text = if left <= 0 {
+                "DRAW"
+            } else if x_move {
+                "O WINS"
+            } else {
+                "X WINS"
+            };
+            let mut text = text.to_string();
+            text.push_str(". Touch screen to play again.");
             let font_size = 30.;
-            let text_size = measure_text(text, None, font_size as _, 1.0);
+            let text_size = measure_text(&text, None, font_size as _, 1.0);
 
             draw_text(
-                text,
+                &text,
                 screen_width() / 2. - text_size.width / 2.,
                 screen_height() / 2. - text_size.height / 2.,
                 font_size,
@@ -143,11 +241,16 @@ async fn main() {
 
             if touched {
                 game_over = false;
+                for field in &mut fields {
+                    *field = None;
+                }
+                x_move = true;
+                left = SQUARES * SQUARES;
                 request_redraw();
             }
         }
 
-        draw_text(format!("FPS: {}", get_fps()).as_str(), 0., 50., 32., RED);
+        // draw_text(format!("FPS: {}", get_fps()).as_str(), 0., 50., 32., RED);
         next_frame().await
     }
 }
