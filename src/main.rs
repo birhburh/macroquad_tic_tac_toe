@@ -97,6 +97,8 @@ async fn main() {
     let mut left = SQUARES * SQUARES;
     let mut prev = None;
 
+    simulate_mouse_with_touch(false);
+
     loop {
         touched = false;
         clicked = false;
@@ -151,6 +153,13 @@ async fn main() {
                 make_move = true;
             }
 
+            draw_text(
+                format!("new_x: {new_x}; new_y: {new_y}").as_str(),
+                0.,
+                50.,
+                32.,
+                RED,
+            );
             for touch in touches().iter().take(1) {
                 match touch.phase {
                     TouchPhase::Ended | TouchPhase::Cancelled => {
