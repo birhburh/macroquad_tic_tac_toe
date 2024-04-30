@@ -92,12 +92,14 @@ async fn main() {
     let mut fields = vec![None; (SQUARES * SQUARES) as usize];
     let mut game_over = false;
     let mut touched;
+    let mut clicked;
     let mut x_move = true;
     let mut left = SQUARES * SQUARES;
     let mut prev = None;
 
     loop {
         touched = false;
+        clicked = false;
         for touch in touches().iter().take(1) {
             match touch.phase {
                 TouchPhase::Ended => {
@@ -105,6 +107,9 @@ async fn main() {
                 }
                 _ => (),
             };
+        }
+        if is_mouse_button_released(MouseButton::Left) {
+            clicked = true;
         }
         if !game_over {
             clear_background(LIGHTGRAY);
@@ -138,32 +143,47 @@ async fn main() {
                 );
             }
 
+            let mut new_x = mouse_position().0;
+            let mut new_y = mouse_position().1;
+            let mut make_move = false;
+
+            if is_mouse_button_released(MouseButton::Left) {
+                make_move = true;
+            }
+
             for touch in touches().iter().take(1) {
                 match touch.phase {
                     TouchPhase::Ended | TouchPhase::Cancelled => {
-                        if prev.is_some() {
-                            x_move = !x_move;
-                            left -= 1;
-                            if left <= 0 {
-                                game_over = true;
-                                request_redraw();
-                            }
-                        }
-                        prev = None;
-                        if check_end(&fields) {
-                            game_over = true;
-                            request_redraw();
-                        }
-                        continue;
+                        make_move = true;
+                        break;
                     }
                     _ => (),
                 }
+                new_x = touch.position.x;
+                new_y = touch.position.y;
+            }
+
+            if make_move {
+                if prev.is_some() {
+                    x_move = !x_move;
+                    left -= 1;
+                    if left <= 0 {
+                        game_over = true;
+                        request_redraw();
+                    }
+                }
+                prev = None;
+                if check_end(&fields) {
+                    game_over = true;
+                    request_redraw();
+                }
+            }
+
+            if !game_over {
                 if let Some(prev) = prev {
                     let field = &mut fields[prev];
                     *field = None;
                 }
-                let new_x = touch.position.x;
-                let new_y = touch.position.y;
 
                 if new_x >= offset_x
                     && new_x <= offset_x + game_size - 20.
@@ -186,6 +206,7 @@ async fn main() {
                     prev = None;
                 }
             }
+
             for (i, field) in fields.iter().enumerate() {
                 if let Some(field) = field {
                     let x = i % SQUARES as usize;
@@ -239,7 +260,7 @@ async fn main() {
                 DARKGRAY,
             );
 
-            if touched {
+            if touched || clicked {
                 game_over = false;
                 for field in &mut fields {
                     *field = None;
