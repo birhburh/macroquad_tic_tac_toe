@@ -1,5 +1,38 @@
 use macroquad::prelude::*;
-use macroquad::request_redraw;
+
+fn window_conf() -> Conf {
+    Conf {
+        window_title: "TicTacToe".to_owned(),
+        platform: miniquad::conf::Platform {
+            blocking_event_loop: true,
+            // apple_gfx_api: miniquad::conf::AppleGfxApi::Metal,
+            ..Default::default()
+        },
+        ..Default::default()
+    }
+}
+
+// #[macroquad::main(window_conf)]
+// async fn main() {
+//     let mut timer_frames = 0;
+//     let mut frame = 0;
+//     macroquad::miniquad::window::schedule_update();
+//     loop {
+//         info!("Frame updated: {}", frame);
+//         frame += 1;
+//         clear_background(LIGHTGRAY);
+//         if macroquad::ui::root_ui().button(None, "Test") {
+//             info!("Button pressed");
+//             timer_frames = 50;
+//         }
+//         if timer_frames != 0 {
+//             timer_frames -= 1;
+//             draw_rectangle(0.0, 100.0, timer_frames as f32 * 20.0, 60.0, GREEN);
+//             macroquad::miniquad::window::schedule_update();
+//         }
+//         next_frame().await
+//     }
+// }
 
 const SQUARES: i16 = 3;
 
@@ -87,7 +120,7 @@ fn check_end(fields: &Vec<Option<Field>>) -> bool {
     false
 }
 
-#[macroquad::main("TicTacToe")]
+#[macroquad::main(window_conf)]
 async fn main() {
     let mut fields = vec![None; (SQUARES * SQUARES) as usize];
     let mut game_over = false;
@@ -178,13 +211,13 @@ async fn main() {
                     left -= 1;
                     if left <= 0 {
                         game_over = true;
-                        request_redraw();
+                        macroquad::miniquad::window::schedule_update();
                     }
                 }
                 prev = None;
                 if check_end(&fields) {
                     game_over = true;
-                    request_redraw();
+                    macroquad::miniquad::window::schedule_update();
                 }
             }
 
@@ -276,7 +309,7 @@ async fn main() {
                 }
                 x_move = true;
                 left = SQUARES * SQUARES;
-                request_redraw();
+                macroquad::miniquad::window::schedule_update();
             }
         }
 

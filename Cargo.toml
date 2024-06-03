@@ -8,4 +8,8 @@ label = "MACROQUAD TIC-TAC-TOE"
 min_sdk_version = 26
 
 [dependencies]
-macroquad = { git = "https://github.com/birhburh/macroquad.git", branch = "less_fps" }
+macroquad = { version = "0.4.7" }
+
+[patch.crates-io]
+# miniquad = { path = "../miniquad"}
+miniquad = { git = "https://github.com/not-fl3/miniquad.git" }
