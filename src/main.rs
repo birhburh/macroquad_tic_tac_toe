@@ -1,39 +1,5 @@
 use macroquad::prelude::*;
 
-fn window_conf() -> Conf {
-    Conf {
-        window_title: "TicTacToe".to_owned(),
-        platform: miniquad::conf::Platform {
-            blocking_event_loop: true,
-            // apple_gfx_api: miniquad::conf::AppleGfxApi::Metal,
-            ..Default::default()
-        },
-        ..Default::default()
-    }
-}
-
-// #[macroquad::main(window_conf)]
-// async fn main() {
-//     let mut timer_frames = 0;
-//     let mut frame = 0;
-//     macroquad::miniquad::window::schedule_update();
-//     loop {
-//         info!("Frame updated: {}", frame);
-//         frame += 1;
-//         clear_background(LIGHTGRAY);
-//         if macroquad::ui::root_ui().button(None, "Test") {
-//             info!("Button pressed");
-//             timer_frames = 50;
-//         }
-//         if timer_frames != 0 {
-//             timer_frames -= 1;
-//             draw_rectangle(0.0, 100.0, timer_frames as f32 * 20.0, 60.0, GREEN);
-//             macroquad::miniquad::window::schedule_update();
-//         }
-//         next_frame().await
-//     }
-// }
-
 const SQUARES: i16 = 3;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -140,6 +106,8 @@ fn game_play_state(
     fields: &mut [Option<Field>],
     x_move: &mut bool,
     pressed_over: &mut Option<usize>,
+    old_x: &mut f32,
+    old_y: &mut f32,
 ) -> (bool, bool) {
     clear_background(LIGHTGRAY);
 
@@ -190,6 +158,32 @@ fn game_play_state(
         new_y = touch.position.y;
     }
 
+    let mut pressed = is_mouse_button_pressed(MouseButton::Left);
+    let mut released = is_mouse_button_released(MouseButton::Left);
+
+    for touch in touches().iter().take(1) {
+        use TouchPhase::*;
+        match touch.phase {
+            Started | Stationary => pressed = true,
+            Ended | Cancelled => {
+                released = true;
+                new_x = *old_x;
+                new_y = *old_y;
+            }
+            _ => ()
+        }
+    }
+
+    debug!("WOW: pressed: {}", pressed);
+    debug!("WOW: released: {}", released);
+    debug!("WOW: new_x: {}", old_x);
+    debug!("WOW: new_y: {}", old_y);
+    debug!("WOW: new_x: {}", new_x);
+    debug!("WOW: new_y: {}", new_y);
+    debug!("WOW: game_size: {}", game_size);
+    debug!("WOW: offset_x: {}", offset_x);
+    debug!("WOW: offset_y: {}", offset_y);
+
     if new_x >= offset_x
         && new_x <= offset_x + game_size - 20.
         && new_y >= offset_y
@@ -199,10 +193,11 @@ fn game_play_state(
         let new_y = (new_y - offset_y) / sq_size;
         let field_num = (new_y as i16 * SQUARES + new_x as i16) as usize;
         let field = &mut fields[field_num];
+
         if field.is_none() {
-            if is_mouse_button_pressed(MouseButton::Left) {
+            if pressed {
                 *pressed_over = Some(field_num);
-            } else if is_mouse_button_released(MouseButton::Left) {
+            } else if released {
                 if let Some(pressed_over) = pressed_over {
                     if *pressed_over == field_num {
                         *field = if *x_move {
@@ -215,12 +210,16 @@ fn game_play_state(
                 }
                 *pressed_over = None;
             }
-        } else if is_mouse_button_pressed(MouseButton::Left) {
+        } else if pressed {
             *pressed_over = None;
         }
-    } else if is_mouse_button_pressed(MouseButton::Left) {
+    } else if pressed {
         *pressed_over = None;
     }
+    *old_x = new_x;
+    *old_y = new_y;
+
+    debug!("WOW: pressed_over: {:?}", pressed_over);
 
     for (i, field) in fields.iter().enumerate() {
         if let Some(field) = field {
@@ -272,6 +271,17 @@ fn game_over_state(win: bool, x_move: bool) {
     );
 }
 
+fn window_conf() -> Conf {
+    Conf {
+        window_title: "TicTacToe".to_owned(),
+        platform: miniquad::conf::Platform {
+            blocking_event_loop: true,
+            ..Default::default()
+        },
+        ..Default::default()
+    }
+}
+
 #[macroquad::main(window_conf)]
 async fn main() {
     let mut fields = vec![None; (SQUARES * SQUARES) as usize];
@@ -279,32 +289,29 @@ async fn main() {
     let mut win = false;
     let mut x_move = true;
     let mut pressed_over = None;
+    let mut old_x = 0.;
+    let mut old_y = 0.;
 
     simulate_mouse_with_touch(false);
 
     loop {
         if !game_over {
-            (game_over, win) = game_play_state(&mut fields, &mut x_move, &mut pressed_over);
+            (game_over, win) = game_play_state(&mut fields, &mut x_move, &mut pressed_over, &mut old_x, &mut old_y);
             if game_over {
                 macroquad::miniquad::window::schedule_update();
             }
         } else {
             game_over_state(win, x_move);
 
-            let mut touched = false;
-            let mut pressed = false;
-
-            if is_mouse_button_pressed(MouseButton::Left) {
-                pressed = true;
-            }
+            let mut pressed = is_mouse_button_pressed(MouseButton::Left);
 
             for touch in touches().iter().take(1) {
                 if touch.phase == TouchPhase::Ended {
-                    touched = true;
+                    pressed = true;
                 }
             }
 
-            if touched || pressed {
+            if pressed {
                 game_over = false;
                 for field in &mut fields {
                     *field = None;
