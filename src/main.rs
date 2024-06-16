@@ -170,7 +170,7 @@ fn game_play_state(
                 new_x = *old_x;
                 new_y = *old_y;
             }
-            _ => ()
+            _ => (),
         }
     }
 
@@ -276,8 +276,10 @@ fn window_conf() -> Conf {
         window_title: "TicTacToe".to_owned(),
         platform: miniquad::conf::Platform {
             blocking_event_loop: true,
+            // apple_gfx_api: miniquad::conf::AppleGfxApi::Metal,
             ..Default::default()
         },
+        // high_dpi: true,
         ..Default::default()
     }
 }
@@ -291,12 +293,19 @@ async fn main() {
     let mut pressed_over = None;
     let mut old_x = 0.;
     let mut old_y = 0.;
+    let mut counter = 0;
 
     simulate_mouse_with_touch(false);
 
     loop {
         if !game_over {
-            (game_over, win) = game_play_state(&mut fields, &mut x_move, &mut pressed_over, &mut old_x, &mut old_y);
+            (game_over, win) = game_play_state(
+                &mut fields,
+                &mut x_move,
+                &mut pressed_over,
+                &mut old_x,
+                &mut old_y,
+            );
             if game_over {
                 macroquad::miniquad::window::schedule_update();
             }
@@ -321,6 +330,19 @@ async fn main() {
                 macroquad::miniquad::window::schedule_update();
             }
         }
+
+        let text = format!("COUNTER: {}", counter);
+        counter += 1;
+        let font_size = 30.;
+        let text_size = measure_text(&text, None, font_size as _, 1.0);
+
+        draw_text(
+            &text,
+            screen_width() / 2. - text_size.width / 2.,
+            screen_height() / 2. - text_size.height / 2.,
+            font_size,
+            RED,
+        );
 
         next_frame().await
     }
