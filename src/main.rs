@@ -145,15 +145,7 @@ fn game_play_state(
     let mut new_y = mouse_position().1;
     let mut make_move = false;
 
-    // TODO: Check if it works on android when blocking_event_loop will be implemented
     for touch in touches().iter().take(1) {
-        match touch.phase {
-            TouchPhase::Ended | TouchPhase::Cancelled => {
-                make_move = true;
-                break;
-            }
-            _ => (),
-        }
         new_x = touch.position.x;
         new_y = touch.position.y;
     }
@@ -176,13 +168,6 @@ fn game_play_state(
 
     debug!("WOW: pressed: {}", pressed);
     debug!("WOW: released: {}", released);
-    debug!("WOW: new_x: {}", old_x);
-    debug!("WOW: new_y: {}", old_y);
-    debug!("WOW: new_x: {}", new_x);
-    debug!("WOW: new_y: {}", new_y);
-    debug!("WOW: game_size: {}", game_size);
-    debug!("WOW: offset_x: {}", offset_x);
-    debug!("WOW: offset_y: {}", offset_y);
 
     if new_x >= offset_x
         && new_x <= offset_x + game_size - 20.
@@ -198,6 +183,7 @@ fn game_play_state(
             if pressed {
                 *pressed_over = Some(field_num);
             } else if released {
+                debug!("WOW: pressed_over HERE: {:?}", pressed_over);
                 if let Some(pressed_over) = pressed_over {
                     if *pressed_over == field_num {
                         *field = if *x_move {
@@ -220,6 +206,7 @@ fn game_play_state(
     *old_y = new_y;
 
     debug!("WOW: pressed_over: {:?}", pressed_over);
+    debug!("WOW: make_move: {:?}", make_move);
 
     for (i, field) in fields.iter().enumerate() {
         if let Some(field) = field {
@@ -242,6 +229,8 @@ fn game_play_state(
     let mut win = false;
     if make_move {
         (game_over, win) = check_end(fields);
+        debug!("WOW: game_over: {:?}", game_over);
+        debug!("WOW: win: {:?}", win);
         *x_move = !*x_move;
         macroquad::miniquad::window::schedule_update();
     }
@@ -271,16 +260,23 @@ fn game_over_state(win: bool, x_move: bool) {
     );
 }
 
-fn window_conf() -> Conf {
-    Conf {
-        window_title: "TicTacToe".to_owned(),
-        platform: miniquad::conf::Platform {
-            blocking_event_loop: true,
-            // apple_gfx_api: miniquad::conf::AppleGfxApi::Metal,
+fn window_conf() -> macroquad::conf::Conf {
+    macroquad::conf::Conf {
+        miniquad_conf: Conf {
+            window_title: "TicTacToe".to_owned(),
+            platform: miniquad::conf::Platform {
+                blocking_event_loop: true,
+                // apple_gfx_api: miniquad::conf::AppleGfxApi::Metal,
+                ..Default::default()
+            },
+            // high_dpi: true,
             ..Default::default()
         },
-        // high_dpi: true,
-        ..Default::default()
+        update_on: Some(macroquad::conf::UpdateTrigger {
+            mouse_down: true,
+            mouse_up: true,
+            ..Default::default()
+        }),
     }
 }
 
@@ -298,6 +294,7 @@ async fn main() {
     simulate_mouse_with_touch(false);
 
     loop {
+        debug!("WOW: MAIN LOOP: game_over: {:?}", game_over);
         if !game_over {
             (game_over, win) = game_play_state(
                 &mut fields,
