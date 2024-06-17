@@ -10,9 +10,10 @@ target_sdk_version = 28
 build_targets = ["armv7-linux-androideabi"]
 
 [dependencies]
-macroquad = { path = "../macroquad" }
+# macroquad = { path = "../macroquad" }
 # macroquad = { version = "0.4.7" }
+macroquad = { git = "https://github.com/not-fl3/macroquad.git" }
 
 [patch.crates-io]
-miniquad = { path = "../miniquad", features = ["log-impl"]}
-# miniquad = { git = "https://github.com/not-fl3/miniquad.git" }
+# miniquad = { path = "../miniquad", features = ["log-impl"]}
+miniquad = { git = "https://github.com/not-fl3/miniquad.git" }

@@ -137,6 +137,7 @@ checksum = "b4668fb0ea861c1df094127ac5f1da3409a82116a4ba74fca2e58ef927159bb3"
 [[package]]
 name = "macroquad"
 version = "0.4.8"
+source = "git+https://github.com/not-fl3/macroquad.git#23d6320d8bd9759afb955cd25c3c590313bdecc5"
 dependencies = [
  "bumpalo",
  "fontdue",
@@ -151,6 +152,7 @@ dependencies = [
 [[package]]
 name = "macroquad_macro"
 version = "0.1.7"
+source = "git+https://github.com/not-fl3/macroquad.git#23d6320d8bd9759afb955cd25c3c590313bdecc5"
 
 [[package]]
 name = "malloc_buf"
@@ -171,6 +173,7 @@ dependencies = [
 [[package]]
 name = "miniquad"
 version = "0.4.2"
+source = "git+https://github.com/not-fl3/miniquad.git#f8c56a3f04c7181b54f96c293d24e50003600030"
 dependencies = [
  "libc",
  "ndk-sys",
