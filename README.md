@@ -12,6 +12,7 @@ Simple macroquad example of using `blocking_event_loop`
 - Android
 - iOS (Metal/Opengl) (It looks really different with opengl with highdpi [on](highdpi_ios.png) and [off](not_highdpi_ios.png))
 - Should work on Windows and `(GNU )?Linux( (X11|Wayland))?( (GTK|QT))?` (Not tested yet)
+- KaiOs? (Now i make plain js run via `asmjs_run.sh`)
 
 ## TODO:
 - Catched bug of `draw_circle_lines` it draws lines like it's sun (Added PR based on another PR, lucky)

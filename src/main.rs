@@ -94,12 +94,7 @@ fn draw_x(x: f32, y: f32) {
 }
 
 fn draw_o(x: f32, y: f32) {
-    draw_poly(x, y, 30, 95., 0., RED);
-    draw_poly(x, y, 30, 50., 0., WHITE);
-    // TODO: Fix poly_lines and make a pull request
-    // They are now like star
-    // draw_circle_lines(x, y, 80., 60., RED);
-    // draw_poly_lines(x, y, 20, 80., 0., 60., RED);
+    draw_circle_lines(x, y, 95., 45., RED);
 }
 
 fn game_play_state(

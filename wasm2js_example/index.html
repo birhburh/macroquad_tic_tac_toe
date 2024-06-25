@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Build as: cargo build --target=wasm32-unknown-unknown -->
+<!-- Then: binaryen/bin/wasm2js target/wasm32-unknown-unknown/debug/maq_tic_tac_toe.wasm -o maq_tic_tac_toe.wasm.js -->
+<!-- Run as: basic-http-server wasm2js_example -->
+<head>
+    <meta charset="utf-8">
+    <title>TITLE</title>
+    <style>
+        html,
+        body,
+        canvas {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: absolute;
+            background: black;
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="glcanvas" tabindex='1'></canvas>
+    <!-- This is not minified copy of mq_js_bundle.js from macroquad it basically gl.js from miniquad with load_asmjs function at the end -->
+    <script src="mq_js_bundle.js"></script>
+    <script>load_asmjs("./maq_tic_tac_toe.wasm.js");</script> <!-- Your compiled wasm file -->
+</body>
+
+</html>
