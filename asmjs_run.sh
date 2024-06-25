@@ -3,16 +3,18 @@
 set -e
 
 # weird solution but it uses right miniquad after that
-rm Cargo.lock
+rm -f Cargo.lock
 
 # based on this
 # https://doc.rust-lang.org/cargo/guide/cargo-home.html
 CARGO_HOME=${CARGO_HOME:-$HOME/.cargo/}
 miniquad_parts=$(cargo tree -p miniquad -f '{p}' 2>/dev/null | head -1)
-miniquad_hash=( $(echo $miniquad_parts | cut -d' ' -f3 | sed 's/(.*#\(.*\))/\1/') )
+miniquad_parts=( $(echo $miniquad_parts | cut -d' ' -f2-3 | sed 's/(.*#\(.*\))/\1/') )
+miniquad_hash=${miniquad_parts[1]}
+miniquad_ver=${miniquad_parts[0]##*v}
 
 status=0
-ls $CARGO_HOME/git/db | grep miniquad -q || status=$?
+ls -1 $CARGO_HOME/git/db | grep miniquad -q || status=$?
 if [ $status -eq 0 ]; then
     for dir in $CARGO_HOME/git/db/miniquad*; do
         hash=$(cat $dir/FETCH_HEAD | cut -f 1)
@@ -28,7 +30,18 @@ if [ $status -eq 0 ]; then
     done
 fi
 
-echo ${miniquad_path:-../miniquad}/js/gl.js
+status=0
+ls -1 $CARGO_HOME/registry/src/*/* | grep miniquad -q || status=$?
+if [ $status -eq 0 ]; then
+    for dir in $CARGO_HOME/registry/src/*/miniquad*; do
+        ver=$(basename $dir | cut -d'-' -f 2)
+        if [[ $ver == $miniquad_ver ]]; then
+            miniquad_path=$dir
+        fi
+    done
+fi
+
+echo Path to gl.js: ${miniquad_path:-../miniquad}/js/gl.js
 ls ${miniquad_path:-../miniquad}/js/gl.js
 cat ${miniquad_path:-../miniquad}/js/gl.js > wasm2js_example/mq_js_bundle.js
 cat >> wasm2js_example/mq_js_bundle.js <<- EOM

@@ -11,10 +11,10 @@ build_targets = ["armv7-linux-androideabi"]
 
 [dependencies]
 # macroquad = { path = "../macroquad" }
-# macroquad = { version = "0.4.8" }
-macroquad = { git = "https://github.com/not-fl3/macroquad.git" }
+macroquad = { version = "0.4.10" }
+# macroquad = { git = "https://github.com/not-fl3/macroquad.git" }
 
 [patch.crates-io]
 # miniquad = { path = "../miniquad", features = ["log-impl"]}
 # miniquad = { git = "https://github.com/not-fl3/miniquad.git" }
-miniquad = { git = "https://github.com/birhburh/miniquad.git", branch = "blocking_event_loop_osx", features = ["log-impl"] }
+# miniquad = { git = "https://github.com/birhburh/miniquad.git", branch = "blocking_event_loop_osx", features = ["log-impl"] }
