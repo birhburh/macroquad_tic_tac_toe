@@ -44,30 +44,7 @@ fi
 echo Path to gl.js: ${miniquad_path:-../miniquad}/js/gl.js
 ls ${miniquad_path:-../miniquad}/js/gl.js
 cat ${miniquad_path:-../miniquad}/js/gl.js > wasm2js_example/mq_js_bundle.js
-cat >> wasm2js_example/mq_js_bundle.js <<- EOM
-function load_asmjs(path) {
-    register_plugins(plugins);
-
-    import(path)
-        .then(function (obj) {
-            wasm_memory = obj.memory;
-            wasm_exports = obj;
-
-            var crate_version = wasm_exports.crate_version();
-            if (version != crate_version) {
-                console.error(
-                    "Version mismatch: gl.js version is: " + version +
-                    ", rust sapp-wasm crate version is: " + crate_version);
-            }
-            init_plugins(plugins);
-            obj.main();
-        })
-        .catch(err => {
-            console.error("WASM failed to load, probably incompatible gl.js version");
-            console.error(err);
-        });
-}
-EOM
+cat >> wasm2js_example/mq_js_bundle.js <wasm2js_example/load_asmjs.js
 
 uglifyjs -b <wasm2js_example/mq_js_bundle.js >wasm2js_example/mq_js_bundle.js.new && mv wasm2js_example/mq_js_bundle.js.new wasm2js_example/mq_js_bundle.js
 

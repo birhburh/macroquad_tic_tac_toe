@@ -6,10 +6,6 @@
     "devDependencies": {
         "@babel/cli": "^7.24.7",
         "@babel/core": "^7.24.7",
-        "@babel/plugin-transform-async-to-generator": "^7.24.7",
-        "@babel/plugin-transform-block-scoping": "^7.24.7",
-        "@babel/plugin-transform-dynamic-import": "^7.24.7",
-        "@babel/plugin-transform-for-of": "^7.24.7",
         "@babel/preset-env": "^7.24.7"
     },
     "scripts": {

@@ -6,6 +6,7 @@
         }],
         "@babel/plugin-transform-block-scoping",
         "@babel/plugin-transform-dynamic-import",
-        "@babel/plugin-transform-modules-commonjs"
+        "@babel/plugin-transform-modules-commonjs",
+        "@babel/plugin-transform-arrow-functions"
     ]
 }

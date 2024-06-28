@@ -9,22 +9,11 @@ npm run build
 popd
 
 cat >> kaios_example/mq_js_bundle.js.new <<- EOM
-    window.MyLogs += "RUNNED mq_js_bundle.js!\n";
-EOM
-
-cat >> wasm2js_example/mq_js_bundle.js <<- EOM
-    load_asmjs = function() {
-        var cached_function = load_asmjs;
-
-        return function() {
-            window.MyLogs += "RUNNED load_asmjs!\n";
-            var result = cached_function.apply(this, arguments);
-
-            return result;
-        };
-    }
+    window.MyLogs += "RUNNING mq_js_bundle.js!\n";
 EOM
 uglifyjs -b <kaios_example/mq_js_bundle.js >>kaios_example/mq_js_bundle.js.new
+cat >> kaios_example/mq_js_bundle.js.new <kaios_example/wrap_asmjs.js
+
 mv kaios_example/mq_js_bundle.js.new kaios_example/mq_js_bundle.js
 
 # exit
