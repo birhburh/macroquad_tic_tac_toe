@@ -2,3 +2,6 @@
 MaqTicTacToe.app/maq_tic_tac_toe
 wasm2js_example/maq_tic_tac_toe.wasm.js
 wasm2js_example/mq_js_bundle.js
+kaios_example/node_modules
+kaios_example/mq_js_bundle.js
+kaios_example/maq_tic_tac_toe.wasm.js

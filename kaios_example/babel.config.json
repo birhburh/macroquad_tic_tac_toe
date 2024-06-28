@@ -1,0 +1,11 @@
+{
+    "plugins": [
+        "@babel/plugin-transform-async-to-generator",
+        ["@babel/plugin-transform-for-of", {
+            "loose": true
+        }],
+        "@babel/plugin-transform-block-scoping",
+        "@babel/plugin-transform-dynamic-import",
+        "@babel/plugin-transform-modules-commonjs"
+    ]
+}
