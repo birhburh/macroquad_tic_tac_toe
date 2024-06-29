@@ -557,12 +557,14 @@ var requirejs, require, define;
          */
         function takeGlobalQueue() {
             //Push all the globalDefQueue items into the context's defQueue
+            console.log(`globalDefQueue.length: ${globalDefQueue.length}!`);
             if (globalDefQueue.length) {
                 each(globalDefQueue, function(queueItem) {
                     var id = queueItem[0];
                     if (typeof id === 'string') {
                         context.defQueueMap[id] = true;
                     }
+                    console.log(`defQueue.push: ${id}!`);
                     defQueue.push(queueItem);
                 });
                 globalDefQueue = [];
@@ -1565,12 +1567,14 @@ var requirejs, require, define;
              * @param {String} moduleName the name of the module to potentially complete.
              */
             completeLoad: function (moduleName) {
+                console.log(`completeLoad?`);
                 var found, args, mod,
                     shim = getOwn(config.shim, moduleName) || {},
                     shExports = shim.exports;
 
                 takeGlobalQueue();
 
+                console.log(`defQueue.length: ${defQueue.length}!`);
                 while (defQueue.length) {
                     args = defQueue.shift();
                     if (args[0] === null) {
@@ -1587,7 +1591,14 @@ var requirejs, require, define;
                         found = true;
                     }
 
-                    callGetModule(args);
+                    try {
+                        console.log(`callGetModule start!`);
+                        callGetModule(args);
+                    } catch (error) {
+                        console.log(`ERROR: ${error}`);
+                        throw error;
+                    }
+                    console.log(`completeLoad!`);
                 }
                 context.defQueueMap = {};
 
@@ -1703,6 +1714,7 @@ var requirejs, require, define;
              * that was loaded.
              */
             onScriptLoad: function (evt) {
+                console.log(`onScriptLoad?`);
                 //Using currentTarget instead of target for Firefox 2.0's sake. Not
                 //all old browsers will be supported, but this one was easy enough
                 //to support and still makes sense.
@@ -1722,6 +1734,7 @@ var requirejs, require, define;
              * Callback for script errors.
              */
             onScriptError: function (evt) {
+                console.log(`onScriptError?`);
                 var data = getScriptData(evt);
                 if (!hasPathFallback(data.id)) {
                     var parents = [];
@@ -1762,6 +1775,7 @@ var requirejs, require, define;
      * name for minification/local scope use.
      */
     req = requirejs = function (deps, callback, errback, optional) {
+        console.log("require: BEGIN");
 
         //Find the right context, use default
         var context, config,
@@ -1784,6 +1798,7 @@ var requirejs, require, define;
         if (config && config.context) {
             contextName = config.context;
         }
+        console.log(`require: contextName: ${contextName}`);
 
         context = getOwn(contexts, contextName);
         if (!context) {
@@ -1794,7 +1809,14 @@ var requirejs, require, define;
             context.configure(config);
         }
 
-        var res = context.require(deps, callback, errback);
+        try {
+            var res = context.require(deps, callback, errback);
+        } catch (error) {
+            console.log(`ERROR: ${error}`);
+            throw (error);
+        }
+
+        console.log(`require: END 0`);
         return res;
     };
 
@@ -2119,6 +2141,7 @@ var requirejs, require, define;
         //occurs. If no context, use the global queue, and get it processed
         //in the onscript load callback.
         if (context) {
+            console.log(`defQueue.push: ${name}!`);
             context.defQueue.push([name, deps, callback]);
             context.defQueueMap[name] = true;
         } else {

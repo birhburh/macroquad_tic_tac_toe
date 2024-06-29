@@ -1,39 +1,28 @@
 function load_asmjs(path) {
-    function log_error(str)
-    {
-        if (window.console) {
-            console.error(str);
-        }
-        else {
-            str += "\n";
-            window.MyLogs += str;
-        }
-    }
-
-    window.MyLogs += "load_asmjs: BEGIN!\n";
+    console.log("load_asmjs: BEGIN!");
     register_plugins(plugins);
 
-    window.MyLogs += "load_asmjs: AFTER register_plugins!\n";
+    console.log("load_asmjs: AFTER register_plugins!");
     import(path)
         .then(function (obj) {
-            window.MyLogs += "load_asmjs: IN then!\n";
+            console.log("load_asmjs: IN then!");
             wasm_memory = obj.memory;
             wasm_exports = obj;
 
             var crate_version = wasm_exports.crate_version();
-            window.MyLogs += "load_asmjs: AFTER crate_version!\n";
+            console.log("load_asmjs: AFTER crate_version!");
             if (version != crate_version) {
-                log_error("Version mismatch: gl.js version is: " + version +
-                          ", rust sapp-wasm crate version is: " + crate_version)
+                console.error("Version mismatch: gl.js version is: " + version +
+                              ", rust sapp-wasm crate version is: " + crate_version);
             }
             init_plugins(plugins);
-            window.MyLogs += "load_asmjs: AFTER init_plugins!\n";
+            console.log(`load_asmjs: AFTER init_plugins!: main?`);
             obj.main();
-            window.MyLogs += "load_asmjs: AFTER main()!\n";
+            console.log("load_asmjs: AFTER main()!");
         })
         .catch(err => {
-            log_error("WASM failed to load, probably incompatible gl.js version");
-            log_error(err);
+            console.error("WASM failed to load, probably incompatible gl.js version");
+            console.error(err);
         });
-    window.MyLogs += "load_asmjs: END!\n";
+    console.log("load_asmjs: END!");
 }
