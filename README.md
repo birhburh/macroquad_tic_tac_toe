@@ -20,6 +20,7 @@ Simple macroquad example of using `blocking_event_loop`
         - Fix Big Chunguses (croses, circles)
 
 ## TODO:
-- Catched bug of `draw_circle_lines` it draws lines like it's sun (Added PR based on another PR, lucky)
-- Add support for touch after `blocking_event_loop` is implemented for android and iOS (Added to macroquad localy, make PR)
 - Clarify in iOS documentation that you need to use your package name instead `mygame` everywhere (probably `cargo-quad-ios` will be convenient) (Probably add log command from [here](https://macroquad.rs/articles/ios/#simulator-logs))
+
+# Credits:
+- [tic-tac-toe icon](https://icon-icons.com/icon/tic-tac-toe/39453)

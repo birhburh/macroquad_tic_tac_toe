@@ -88,13 +88,17 @@ fn check_end(fields: &[Option<Field>]) -> (bool, bool) {
     (!has_empty, false)
 }
 
-fn draw_x(x: f32, y: f32) {
-    draw_line(x - 80., y - 80., x + 80., y + 80., 60., BLUE);
-    draw_line(x + 80., y - 80., x - 80., y + 80., 60., BLUE);
+fn draw_x(x: f32, y: f32, sq_size: f32) {
+    let width = sq_size * 0.75;
+    let proportion : f32 = width / 140.;
+    draw_line(x - width / 2., y - width / 2., x + width / 2., y + width / 2., 60. * proportion, BLUE);
+    draw_line(x + width / 2., y - width / 2., x - width / 2., y + width / 2., 60. * proportion, BLUE);
 }
 
-fn draw_o(x: f32, y: f32) {
-    draw_circle_lines(x, y, 95., 45., RED);
+fn draw_o(x: f32, y: f32, sq_size: f32) {
+    let width = sq_size * 0.70;
+    let proportion : f32 = width / 140.;
+    draw_circle_lines(x, y, 95. * proportion, 45. * proportion, RED);
 }
 
 fn game_play_state(
@@ -212,10 +216,10 @@ fn game_play_state(
             let new_y = offset_y as usize + sq_size as usize * y + sq_size as usize / 2;
             match field {
                 Field::X => {
-                    draw_x(new_x as f32, new_y as f32);
+                    draw_x(new_x as f32, new_y as f32, sq_size);
                 }
                 Field::O => {
-                    draw_o(new_x as f32, new_y as f32);
+                    draw_o(new_x as f32, new_y as f32, sq_size);
                 }
             }
         }
@@ -265,6 +269,8 @@ fn window_conf() -> macroquad::conf::Conf {
                 // apple_gfx_api: miniquad::conf::AppleGfxApi::Metal,
                 ..Default::default()
             },
+            window_height: 200,
+            window_width: 200,
             // high_dpi: true,
             ..Default::default()
         },
