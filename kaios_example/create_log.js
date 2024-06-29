@@ -34,6 +34,10 @@ return {
 }(window.console));
 window.console = console;
 
+window.alert = function(text) {
+    console.log("ALERT: " + text);
+};
+
 console.log("\n");
 console.log("RUNNING create_log.js!");
 

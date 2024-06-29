@@ -12,7 +12,13 @@ Simple macroquad example of using `blocking_event_loop`
 - Android
 - iOS (Metal/Opengl) (It looks really different with opengl with highdpi [on](highdpi_ios.png) and [off](not_highdpi_ios.png))
 - Should work on Windows and `(GNU )?Linux( (X11|Wayland))?( (GTK|QT))?` (Not tested yet)
-- KaiOs? (Now i make plain js run via `asmjs_run.sh`)
+- KaiOs! (2.5.1)
+    - If you have kaios phone: `kaios_run.sh`
+    - TODO:
+        - Add gif or apng to readme
+        - Add button control
+        - Show cursor
+        - Find way to realy minimize
 
 ## TODO:
 - Catched bug of `draw_circle_lines` it draws lines like it's sun (Added PR based on another PR, lucky)
