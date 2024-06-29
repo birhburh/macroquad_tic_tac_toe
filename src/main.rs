@@ -177,7 +177,8 @@ fn game_play_state(
         if field.is_none() {
             if pressed {
                 *pressed_over = Some(field_num);
-            } else if released {
+            }
+            if released {
                 debug!("WOW: pressed_over HERE: {:?}", pressed_over);
                 if let Some(pressed_over) = pressed_over {
                     if *pressed_over == field_num {

@@ -1,8 +1,9 @@
 {
-	"name": "Hello World",
-	"description": "greeting to the world",
+	"name": "Tic-Tac-Toe",
+	"cursor": true,
+	"description": "miniquad Tic-Tac-Toe",
 	"type": "certified",
-	"origin": "app://helloworld.birh.burh",
+	"origin": "app://tic-tac-toe.birh.burh",
 	"permissions": {
 		"engmode-extension": {}
 	},

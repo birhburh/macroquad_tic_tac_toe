@@ -16,9 +16,8 @@ Simple macroquad example of using `blocking_event_loop`
     - If you have kaios phone: `kaios_run.sh`
     - TODO:
         - Add gif or apng to readme
-        - Add button control
-        - Show cursor
-        - Find way to realy minimize
+        - Find way to really minimize size and loading time
+        - Fix Big Chunguses (croses, circles)
 
 ## TODO:
 - Catched bug of `draw_circle_lines` it draws lines like it's sun (Added PR based on another PR, lucky)
