@@ -5,6 +5,11 @@ window.onerror = function(msg, url, lineNo, columnNo, error){
     console.log(`WINDOW ERROR: kaios_example/${url}:${lineNo}:${columnNo}: ${msg}, ${error}!`);
 }
 
+require.config({
+    baseUrl: ".",
+    waitSeconds: 200
+});
+
 var script = document.createElement('script');
 script.src = "mq_js_bundle.js";
 

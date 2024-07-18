@@ -4,7 +4,9 @@ window.MyLogs = {
         this.queue.push(value);
     },
     read() {
-        return this.queue.shift(1);
+        var res = this.queue.join('\n');
+        this.queue = [];
+        return res;
     },
 };
 
@@ -29,7 +31,11 @@ return {
     error: function (text) {
         oldCons.error(text);
         window.MyLogs.write("ERROR: " + text);
-    }
+    },
+    assert: function(val, text){
+        window.MyLogs.write(`ASSERT: ${val}: ${text}`);
+        oldCons.assert(val, text);
+    },
 };
 }(window.console));
 window.console = console;

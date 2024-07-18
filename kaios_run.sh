@@ -17,6 +17,7 @@ mv kaios_example/mq_js_bundle.js.new kaios_example/mq_js_bundle.js
 
 cat >kaios_example/maq_tic_tac_toe.wasm.js.new <<- EOM
     console.log("RUNNING maq_tic_tac_toe.wasm.js.new!");
+
     define(function(require, exports, module) {
         console.log("RUNNING INSIDE define!");
 EOM
@@ -26,23 +27,35 @@ cat >>kaios_example/maq_tic_tac_toe.wasm.js.new <<- EOM
 EOM
 mv kaios_example/maq_tic_tac_toe.wasm.js.new kaios_example/maq_tic_tac_toe.wasm.js
 
-gdeploy stop tic-tac-toe.birh.burh
+id=$(sed <kaios_example/manifest.webapp -n 's/.*"origin": "app:\/\/\(.*\)",/\1/p')
 
-gdeploy uninstall tic-tac-toe.birh.burh
+gdeploy stop $id 2>/dev/null || true
+
+gdeploy uninstall $id 2>/dev/null || true
 gdeploy install kaios_example
 
-gdeploy start tic-tac-toe.birh.burh
+echo $id
+gdeploy start $id
 repeats=0
 while true; do
-    line=$(gdeploy evaluate tic-tac-toe.birh.burh "window.MyLogs.read()" | tail -n +3 | sed 's/Script run in the tic-tac-toe.birh.burh app context evaluated to: //')
-    if [ "$line" = '{ type: '\''undefined'\'' }' ]; then
+    readed=$(gdeploy evaluate $id "window.MyLogs.read()")
+    lines="$(echo -n "$readed" | tail -n +3 | sed "s/Script run in the $id app context evaluated to: //")"
+
+    if [ $(echo -n "$lines" | wc -l) -eq 0 ]; then
         sleep 0.1
         (( repeats++ ))
-        if [ $repeats -gt 100 ]; then
+        if [ $repeats -eq 30 ]; then
+            echo "Oh dear..."
+        fi
+        if [ $repeats -gt 50 ]; then
+            echo "Now you've done it"
             break
         fi
     else
         repeats=0
-        echo $line
+
+        echo "$lines" | while IFS= read -r line ; do
+            echo $(date '+%Y-%m-%d %H:%M:%S') $line
+        done
     fi
 done

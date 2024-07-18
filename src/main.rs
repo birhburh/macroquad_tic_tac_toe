@@ -1,5 +1,4 @@
 use macroquad::prelude::*;
-use miniquad::log;
 
 const SQUARES: i16 = 3;
 
