@@ -1,4 +1,5 @@
 use macroquad::prelude::*;
+use miniquad::log;
 
 const SQUARES: i16 = 3;
 
@@ -165,9 +166,6 @@ fn game_play_state(
         }
     }
 
-    debug!("WOW: pressed: {}", pressed);
-    debug!("WOW: released: {}", released);
-
     if new_x >= offset_x
         && new_x <= offset_x + game_size - 20.
         && new_y >= offset_y
@@ -183,7 +181,6 @@ fn game_play_state(
                 *pressed_over = Some(field_num);
             }
             if released {
-                debug!("WOW: pressed_over HERE: {:?}", pressed_over);
                 if let Some(pressed_over) = pressed_over {
                     if *pressed_over == field_num {
                         *field = if *x_move {
@@ -204,9 +201,6 @@ fn game_play_state(
     }
     *old_x = new_x;
     *old_y = new_y;
-
-    debug!("WOW: pressed_over: {:?}", pressed_over);
-    debug!("WOW: make_move: {:?}", make_move);
 
     for (i, field) in fields.iter().enumerate() {
         if let Some(field) = field {
@@ -229,8 +223,6 @@ fn game_play_state(
     let mut win = false;
     if make_move {
         (game_over, win) = check_end(fields);
-        debug!("WOW: game_over: {:?}", game_over);
-        debug!("WOW: win: {:?}", win);
         *x_move = !*x_move;
         macroquad::miniquad::window::schedule_update();
     }
@@ -294,10 +286,14 @@ async fn main() {
     let mut old_y = 0.;
     let mut counter = 0;
 
+    const HOST: &str = env!("HOST");
+    const TARGET: &str = env!("TARGET");
+    info!("HOST: {}", HOST);
+    info!("TARGET: {}", TARGET);
+
     simulate_mouse_with_touch(false);
 
     loop {
-        debug!("WOW: MAIN LOOP: game_over: {:?}", game_over);
         if !game_over {
             (game_over, win) = game_play_state(
                 &mut fields,
