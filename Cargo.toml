@@ -16,5 +16,16 @@ macroquad = { version = "0.4.11" }
 
 [patch.crates-io]
 # miniquad = { path = "../miniquad", features = ["log-impl"]}
-# miniquad = { git = "https://github.com/not-fl3/miniquad.git" }
-miniquad = { git = "https://github.com/birhburh/miniquad.git", branch = "coremidi_fix", features = ["log-impl"] }
+miniquad = { git = "https://github.com/not-fl3/miniquad.git" }
+# miniquad = { git = "https://github.com/birhburh/miniquad.git", branch = "coremidi_fix", features = ["log-impl"] }
+
+[profile.release]
+lto = true
+panic = 'abort'
+opt-level = "z"
+overflow-checks = false
+debug-assertions = false
+incremental = false
+rpath = false
+codegen-units = 1
+strip = true

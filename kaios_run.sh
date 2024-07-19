@@ -21,11 +21,17 @@ cat >kaios_example/maq_tic_tac_toe.wasm.js.new <<- EOM
     define(function(require, exports, module) {
         console.log("RUNNING INSIDE define!");
 EOM
-sed 's/^export var \([^ ]*\) /exports\.\1 /' <wasm2js_example/maq_tic_tac_toe.wasm.js | uglifyjs >>kaios_example/maq_tic_tac_toe.wasm.js.new
+sed 's/^export var \([^ ]*\) /exports\.\1 /' <kaios_example/maq_tic_tac_toe.wasm.js | uglifyjs >>kaios_example/maq_tic_tac_toe.wasm.js.new
 cat >>kaios_example/maq_tic_tac_toe.wasm.js.new <<- EOM
     });
 EOM
 mv kaios_example/maq_tic_tac_toe.wasm.js.new kaios_example/maq_tic_tac_toe.wasm.js
+
+du -h target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm
+du -h kaios_example/maq_tic_tac_toe.wasm.js
+
+# basic-http-server kaios_example
+# exit
 
 id=$(sed <kaios_example/manifest.webapp -n 's/.*"origin": "app:\/\/\(.*\)",/\1/p')
 

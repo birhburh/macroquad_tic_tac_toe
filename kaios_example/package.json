@@ -6,9 +6,10 @@
     "devDependencies": {
         "@babel/cli": "^7.24.7",
         "@babel/core": "^7.24.7",
-        "@babel/preset-env": "^7.24.7"
+        "@babel/preset-env": "^7.24.7",
+        "rollup": "^4.18.1"
     },
     "scripts": {
-        "build": "babel ../wasm2js_example/mq_js_bundle.js -o mq_js_bundle.js"
+        "build": "babel mq_js_bundle.js -o mq_js_bundle.js.new && mv mq_js_bundle.js.new mq_js_bundle.js"
     }
 }
