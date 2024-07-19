@@ -1,10 +1,12 @@
 import legacy from '@rollup/plugin-legacy';
+import { babel } from '@rollup/plugin-babel';
+import terser from '@rollup/plugin-terser';
 
 export default {
     input: 'run.js',
     output: {
       format: "iife",
-      file: "bundle.js",
+      file: "application/bundle.js",
       intro: "var wasm_memory; var wasm_exports;"
     },
     plugins: [
@@ -30,10 +32,15 @@ export default {
           if (id.includes("mq_js_bundle.js")) {
             code = code.replace(/var wasm_memory;/, '');
             code = code.replace(/var wasm_exports;/, '');
+            code = code.replace(/"webgl"/, '"experimental-webgl"');
+            code = "console.log(\"RUNNING mq_js_bundle.js!\");" + code;
             return code;
           }
         }
       },
+      babel({ babelHelpers: 'bundled' }),
+      terser(),
+
       // {
       //   transform ( code, id ) {
       //     if (id.includes("mq_js_bundle.js")) {

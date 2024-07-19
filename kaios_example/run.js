@@ -13,32 +13,32 @@ window.MyLogs = {
     },
 };
 
-function handle_log(orig_func, title, text) {
+function handle_log(oldCons, orig_func, title, text) {
     var err = new Error();
     var text = err.stack.split('\n')[2].split('/').slice(-1) + ": " + text;
-    orig_func(text);
+    orig_func.bind(oldCons)(text);
     window.MyLogs.write(title + ": " + text);
 }
 
 var console=(function(oldCons){
 return {
     debug: function(text){
-        handle_log(oldCons.debug, "DEBUG", text);
+        handle_log(oldCons, oldCons.debug, "DEBUG", text);
     },
     log: function(text){
-        handle_log(oldCons.log, "LOG", text);
+        handle_log(oldCons, oldCons.log, "LOG", text);
     },
     info: function (text) {
-        handle_log(oldCons.info, "INFO", text);
+        handle_log(oldCons, oldCons.info, "INFO", text);
     },
     warn: function (text) {
-        handle_log(oldCons.warn, "WARN", text);
+        handle_log(oldCons, oldCons.warn, "WARN", text);
     },
     error: function (text) {
-        handle_log(oldCons.error, "ERROR", text);
+        handle_log(oldCons, oldCons.error, "ERROR", text);
     },
     assert: function(val, text){
-        handle_log(oldCons.assert, "ASSERT", text);
+        handle_log(oldCons, oldCons.assert, "ASSERT", text);
     },
 };
 }(window.console));
@@ -66,7 +66,7 @@ try {
                       ", rust sapp-wasm crate version is: " + crate_version);
     }
     mq_js_bundle.init_plugins(mq_js_bundle.plugins);
-    maq_tic_tac_toe.main()
+    maq_tic_tac_toe.main();
 } catch (error) {
     console.log(`ERROR: ${error}`);
 }

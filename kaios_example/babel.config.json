@@ -5,10 +5,7 @@
             "loose": true
         }],
         "@babel/plugin-transform-block-scoping",
-        "@babel/plugin-transform-dynamic-import",
-        "@babel/plugin-transform-arrow-functions",
-        ["@babel/plugin-transform-modules-commonjs", {
-            "importInterop": "none"
-        }]
-    ]
+        "@babel/plugin-transform-arrow-functions"
+    ],
+    "targets": { "firefox": "48" }
 }

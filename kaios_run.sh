@@ -3,32 +3,24 @@
 set -e
 ./asmjs_build.sh
 
+
 pushd kaios_example
 npm install
 npm run build_new
 popd
 
-cat >kaios_example/mq_js_bundle.js.new <<- EOM
-    console.log("RUNNING mq_js_bundle.js!");
-EOM
-uglifyjs -b <kaios_example/mq_js_bundle.js | sed 's/"webgl"/"experimental-webgl"/' >>kaios_example/mq_js_bundle.js.new
-mv kaios_example/mq_js_bundle.js.new kaios_example/mq_js_bundle.js
-
-uglifyjs kaios_example/maq_tic_tac_toe.js >>kaios_example/maq_tic_tac_toe.js.new
-mv kaios_example/maq_tic_tac_toe.js.new kaios_example/maq_tic_tac_toe.js
-
 du -h target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm
-du -h kaios_example/maq_tic_tac_toe.js
+du -h kaios_example/application/bundle.js
 
-# basic-http-server kaios_example
+# basic-http-server kaios_example/application
 # exit
 
-id=$(sed <kaios_example/manifest.webapp -n 's/.*"origin": "app:\/\/\(.*\)",/\1/p')
+id=$(sed <kaios_example/application/manifest.webapp -n 's/.*"origin": "app:\/\/\(.*\)",/\1/p')
 
 gdeploy stop $id 2>/dev/null || true
 
 gdeploy uninstall $id 2>/dev/null || true
-gdeploy install kaios_example
+gdeploy install kaios_example/application
 
 echo $id
 gdeploy start $id
