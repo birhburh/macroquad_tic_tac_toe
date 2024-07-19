@@ -3,7 +3,7 @@
 set -e
 
 # weird solution but it uses right miniquad after that
-rm -f Cargo.lock
+# rm -f Cargo.lock
 
 # based on this
 # https://doc.rust-lang.org/cargo/guide/cargo-home.html
@@ -44,12 +44,9 @@ fi
 echo Path to gl.js: ${miniquad_path:-../miniquad}/js/gl.js
 ls ${miniquad_path:-../miniquad}/js/gl.js
 cat ${miniquad_path:-../miniquad}/js/gl.js > kaios_example/mq_js_bundle.js
-cat >> kaios_example/mq_js_bundle.js <kaios_example/load_asmjs.js
 
 uglifyjs -b <kaios_example/mq_js_bundle.js >kaios_example/mq_js_bundle.js.new && mv kaios_example/mq_js_bundle.js.new kaios_example/mq_js_bundle.js
 
 cargo build --target=wasm32-unknown-unknown --release
 # install binaryen's wasm2js (or just build it and add to PATH)
-wasm2js --strip-debug -Oz target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_example/maq_tic_tac_toe.wasm.js
-# osx have bsd-s sed so yeah
-sed "s/import \* as env from 'env';/var env = importObject.env;/" kaios_example/maq_tic_tac_toe.wasm.js >kaios_example/maq_tic_tac_toe.wasm.js.temp && mv kaios_example/maq_tic_tac_toe.wasm.js.temp kaios_example/maq_tic_tac_toe.wasm.js
+wasm2js -Oz target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_example/maq_tic_tac_toe.js

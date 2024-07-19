@@ -1,4 +1,5 @@
 fn main() {
+    println!("cargo::rerun-if-changed=src/main.rs");
     println!(
         "cargo:rustc-env=HOST={}",
         std::env::var("HOST").unwrap()

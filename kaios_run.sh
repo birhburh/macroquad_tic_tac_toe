@@ -5,30 +5,20 @@ set -e
 
 pushd kaios_example
 npm install
-npm run build
+npm run build_new
 popd
 
 cat >kaios_example/mq_js_bundle.js.new <<- EOM
     console.log("RUNNING mq_js_bundle.js!");
 EOM
 uglifyjs -b <kaios_example/mq_js_bundle.js | sed 's/"webgl"/"experimental-webgl"/' >>kaios_example/mq_js_bundle.js.new
-cat <kaios_example/wrap_asmjs.js >>kaios_example/mq_js_bundle.js.new
 mv kaios_example/mq_js_bundle.js.new kaios_example/mq_js_bundle.js
 
-cat >kaios_example/maq_tic_tac_toe.wasm.js.new <<- EOM
-    console.log("RUNNING maq_tic_tac_toe.wasm.js.new!");
-
-    define(function(require, exports, module) {
-        console.log("RUNNING INSIDE define!");
-EOM
-sed 's/^export var \([^ ]*\) /exports\.\1 /' <kaios_example/maq_tic_tac_toe.wasm.js | uglifyjs >>kaios_example/maq_tic_tac_toe.wasm.js.new
-cat >>kaios_example/maq_tic_tac_toe.wasm.js.new <<- EOM
-    });
-EOM
-mv kaios_example/maq_tic_tac_toe.wasm.js.new kaios_example/maq_tic_tac_toe.wasm.js
+uglifyjs kaios_example/maq_tic_tac_toe.js >>kaios_example/maq_tic_tac_toe.js.new
+mv kaios_example/maq_tic_tac_toe.js.new kaios_example/maq_tic_tac_toe.js
 
 du -h target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm
-du -h kaios_example/maq_tic_tac_toe.wasm.js
+du -h kaios_example/maq_tic_tac_toe.js
 
 # basic-http-server kaios_example
 # exit
