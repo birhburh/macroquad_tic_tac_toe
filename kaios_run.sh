@@ -46,7 +46,6 @@ fi
 echo Path to gl.js: ${miniquad_path:-../miniquad}/js/gl.js
 ls ${miniquad_path:-../miniquad}/js/gl.js
 cat ${miniquad_path:-../miniquad}/js/gl.js > kaios_example/mq_js_bundle.js
-
 uglifyjs -b <kaios_example/mq_js_bundle.js >kaios_example/mq_js_bundle.js.new && mv kaios_example/mq_js_bundle.js.new kaios_example/mq_js_bundle.js
 
 cargo build --target=wasm32-unknown-unknown --release
@@ -55,7 +54,7 @@ wasm2js -Oz target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_
 
 pushd kaios_example
 npm install
-npm run build_new
+npm run build
 popd
 
 du -h target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm
@@ -72,6 +71,7 @@ gdeploy uninstall $id 2>/dev/null || true
 gdeploy install kaios_example/application
 
 echo $id
+echo $(date '+%Y-%m-%d %H:%M:%S')
 gdeploy start $id
 repeats=0
 while true; do

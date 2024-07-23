@@ -6,8 +6,7 @@ export default {
     input: 'run.js',
     output: {
       format: "iife",
-      file: "application/bundle.js",
-      intro: "var wasm_memory; var wasm_exports;"
+      file: "application/bundle.js"
     },
     plugins: [
       legacy({
@@ -21,25 +20,32 @@ export default {
       }),
       {
         transform ( code, id ) {
-          if (id.includes("maq_tic_tac_toe.js")) {
+          if (id.includes("mq_js_bundle.js")) {
+            code = code.replace(/var wasm_memory;/, "import {memory as wasm_memory} from './maq_tic_tac_toe';");
+            code = code.replace(/var wasm_exports;/, "import * as wasm_exports from './maq_tic_tac_toe';");
+            code = code.replaceAll(/wasm_memory = [^\n]*;/g, "");
+            code = code.replaceAll(/wasm_exports = [^\n]*;/g, "");
+            code = code.replace(/"webgl"/, '"experimental-webgl"');
+            code = "console.log(\"RUNNING mq_js_bundle.js!\");" + code;
+            return code;
+          } else if (id.includes("maq_tic_tac_toe.js")) {
             code = code.replace(/^import \* as env from 'env'/, 'import env from \'./mq_js_bundle.js\'');
             return code;
           }
         }
       },
-      {
-        transform ( code, id ) {
-          if (id.includes("mq_js_bundle.js")) {
-            code = code.replace(/var wasm_memory;/, '');
-            code = code.replace(/var wasm_exports;/, '');
-            code = code.replace(/"webgl"/, '"experimental-webgl"');
-            code = "console.log(\"RUNNING mq_js_bundle.js!\");" + code;
-            return code;
-          }
-        }
-      },
       babel({ babelHelpers: 'bundled' }),
-      terser(),
+      terser({
+        toplevel: true,
+        mangle: {
+          properties: {
+            reserved: ['createVertexArrayOES', 'deleteVertexArrayOES', 'bindVertexArrayOES', 'isVertexArrayOES']
+          }
+        },
+        output: {
+          // beautify: true
+        }
+      })
 
       // {
       //   transform ( code, id ) {
