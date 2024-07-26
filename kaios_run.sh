@@ -50,7 +50,16 @@ uglifyjs -b <kaios_example/mq_js_bundle.js >kaios_example/mq_js_bundle.js.new &&
 
 cargo build --target=wasm32-unknown-unknown --release
 # install binaryen's wasm2js (or just build it and add to PATH)
-wasm2js -Oz target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_example/maq_tic_tac_toe.js
+# wasm2js -Oz target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_example/maq_tic_tac_toe.js
+# wasm2js --emscripten -Oz target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_example/application/maq_tic_tac_toe.js
+
+# wasm2wat target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_example/maq_tic_tac_toe.wat
+cp target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm kaios_example/application
+
+wat2wasm kaios_example/itoa.wat -o kaios_example/itoa.wasm
+wasm2wat kaios_example/itoa.wasm -o kaios_example/itoa.out.wat
+# wasm2js -Oz kaios_example/itoa.wasm -o kaios_example/itoa.js
+cp kaios_example/itoa.wasm kaios_example/application
 
 pushd kaios_example
 npm install
@@ -59,9 +68,10 @@ popd
 
 du -h target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm
 du -h kaios_example/application/bundle.js
+du -h kaios_example/application/itoa.wasm
 
-# basic-http-server kaios_example/application
-# exit
+basic-http-server kaios_example/application
+exit
 
 id=$(sed <kaios_example/application/manifest.webapp -n 's/.*"origin": "app:\/\/\(.*\)",/\1/p')
 

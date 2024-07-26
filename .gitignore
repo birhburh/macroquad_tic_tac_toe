@@ -4,3 +4,8 @@ kaios_example/node_modules
 kaios_example/mq_js_bundle.js
 kaios_example/maq_tic_tac_toe.js
 kaios_example/application/bundle.js
+kaios_example/itoa.wasm
+kaios_example/itoa.out.wat
+kaios_example/application/itoa.wasm
+kaios_example/application/maq_tic_tac_toe.wasm
+kaios_example/maq_tic_tac_toe.wat

@@ -7,5 +7,6 @@
         "@babel/plugin-transform-block-scoping",
         "@babel/plugin-transform-arrow-functions"
     ],
-    "targets": { "firefox": "48" }
+    "targets": { "firefox": "48" },
+    "compact": false
 }
