@@ -107,7 +107,7 @@ while true; do
     readed=$(gdeploy evaluate $id "window.MyLogs.read()")
     lines="$(echo -n "$readed" | tail -n +3 | sed "s/Script run in the $id app context evaluated to: //")"
 
-    if [ $(echo -n "$lines" | wc -l) -eq 0 ]; then
+    if [ $(echo -n "$lines" | wc -l) -eq 0 ] && [ "$lines" == "" ]; then
         sleep 0.1
         (( repeats++ ))
         if [ $repeats -eq 30 ]; then

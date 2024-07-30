@@ -65,4 +65,4 @@ const a = performance.now();
 };
 script.src = "bundle.js";
 
-document.head.appendChild(script); //or something of the likes
+document.head.appendChild(script);

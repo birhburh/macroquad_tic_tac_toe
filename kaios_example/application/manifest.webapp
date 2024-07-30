@@ -2,7 +2,6 @@
 	"name": "Tic-Tac-Toe",
 	"cursor": true,
 	"description": "miniquad Tic-Tac-Toe",
-	"type": "priveleged",
 	"origin": "app://tic-tac-toe.birh.burh",
 	"permissions": {
 		"engmode-extension": {}
