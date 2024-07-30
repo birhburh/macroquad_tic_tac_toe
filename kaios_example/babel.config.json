@@ -5,7 +5,10 @@
             "loose": true
         }],
         "@babel/plugin-transform-block-scoping",
-        "@babel/plugin-transform-arrow-functions"
+        "@babel/plugin-transform-arrow-functions",
+        "@babel/plugin-transform-optional-chaining",
+        "@babel/plugin-transform-optional-catch-binding",
+        "babel-plugin-transform-globalthis"
     ],
     "targets": { "firefox": "48" },
     "compact": false

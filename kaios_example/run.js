@@ -1,5 +1,5 @@
 import * as polywasm from 'polywasm';
-// import * as mq_js_bundle from './mq_js_bundle.js';
+import * as mq_js_bundle from './mq_js_bundle.js';
 
 globalThis.WebAssembly = polywasm.WebAssembly;
 

@@ -12,9 +12,9 @@
         "@rollup/plugin-legacy": "^3.0.2",
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-terser": "^0.4.4",
-        "rollup": "^4.18.1",
-        "polywasm_old": "birhburh/polywasm#miniquad_needs",
-        "polywasm": "../../polywasm"
+        "babel-plugin-transform-globalthis": "^1.0.0",
+        "polywasm": "birhburh/polywasm#miniquad_needs",
+        "rollup": "^4.18.1"
     },
     "scripts": {
         "build": "rollup -c"

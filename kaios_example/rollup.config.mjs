@@ -30,17 +30,13 @@ export default {
       nodeResolve(),
       babel({ babelHelpers: 'bundled' }),
 
-      // terser({
-      //   toplevel: true,
-      //   mangle: {
-      //     properties: {
-      //       reserved: ['createVertexArrayOES', 'deleteVertexArrayOES', 'bindVertexArrayOES', 'isVertexArrayOES']
-      //     }
-      //   },
-      //   output: {
-      //     // beautify: true
-      //   }
-      // }),
+      terser({
+        toplevel: true,
+        mangle: true,
+        output: {
+          // beautify: true
+        }
+      }),
 
 
 

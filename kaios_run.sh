@@ -53,7 +53,7 @@ cargo build --target=wasm32-unknown-unknown --release
 # wasm2js -Oz target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_example/maq_tic_tac_toe.js
 # wasm2js --emscripten -Oz target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_example/application/maq_tic_tac_toe.js
 
-# wasm2wat target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_example/maq_tic_tac_toe.wat
+wasm2wat target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm -o kaios_example/maq_tic_tac_toe.wat
 cp target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm kaios_example/application
 
 wat2wasm kaios_example/itoa.wat -o kaios_example/itoa.wasm
@@ -70,15 +70,34 @@ du -h target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm
 du -h kaios_example/application/bundle.js
 du -h kaios_example/application/itoa.wasm
 
-basic-http-server kaios_example/application
-exit
+# basic-http-server kaios_example/application
+# exit
 
+name=$(sed <kaios_example/application/manifest.webapp -n 's/.*"name": "\(.*\)",/\1/p')
 id=$(sed <kaios_example/application/manifest.webapp -n 's/.*"origin": "app:\/\/\(.*\)",/\1/p')
+type=$(sed <kaios_example/application/manifest.webapp -n 's/.*"type": "\(.*\)",/\1/p')
+echo $name
+echo $id
+echo $type
 
-gdeploy stop $id 2>/dev/null || true
+if [ "$type" != "certified" ]; then
+    line=$(gdeploy list | grep "$name" || true)
+    if [ "$line" != "" ]; then
+        id=$(echo $line | cut -d' ' -f3 | sed 's/app:\/\/\(.*\)\/manifest.webapp/\1/')
+    fi
+fi
+
+echo $id
+echo $type
+gdeploy stop "$id" 2>/dev/null || true
 
 gdeploy uninstall $id 2>/dev/null || true
-gdeploy install kaios_example/application
+install_res=$(gdeploy install kaios_example/application)
+echo $id
+echo "$install_res"
+if [ "$type" != "certified" ]; then
+    id=$(echo "$install_res" | tail -1 | cut -d' ' -f2)
+fi
 
 echo $id
 echo $(date '+%Y-%m-%d %H:%M:%S')
