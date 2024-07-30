@@ -70,8 +70,8 @@ du -h target/wasm32-unknown-unknown/release/maq_tic_tac_toe.wasm
 du -h kaios_example/application/bundle.js
 du -h kaios_example/application/itoa.wasm
 
-# basic-http-server kaios_example/application
-# exit
+basic-http-server kaios_example/application
+exit
 
 name=$(sed <kaios_example/application/manifest.webapp -n 's/.*"name": "\(.*\)",/\1/p')
 id=$(sed <kaios_example/application/manifest.webapp -n 's/.*"origin": "app:\/\/\(.*\)",/\1/p')
